@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Testes JavaScript</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 30px;
+}
+
+.container {
+    max-width: 1300px;
+    margin: auto;
+}
+
+header {
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.info {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.info span {
+    background: #1e293b;
+    padding: 8px 13px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 22px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+}
+
+.card p {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.card h2 {
+    font-size: 30px;
+}
+
+.green { color: #4ade80; }
+.red { color: #f87171; }
+.blue { color: #60a5fa; }
+.purple { color: #c084fc; }
+
+.panel {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 22px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+}
+
+.panel h3 {
+    font-size: 17px;
+    margin-bottom: 18px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.run {
+    background: #2563eb;
+    color: white;
+}
+
+.run:hover {
+    background: #1d4ed8;
+}
+
+.reset {
+    background: #334155;
+    color: white;
+}
+
+.status {
+    background: #0f172a;
+    border-radius: 7px;
+    padding: 14px;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+.progress {
+    height: 10px;
+    background: #334155;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #22c55e;
+    transition: .4s;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 9px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th, td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+    font-size: 12px;
+}
+
+th {
+    color: #94a3b8;
+    background: #172338;
+}
+
+td {
+    color: #cbd5e1;
+}
+
+.group td {
+    background: #172338;
+    color: #60a5fa;
+    font-weight: bold;
+    padding: 12px;
+}
+
+.badge {
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.pass {
+    background: #14532d;
+    color: #86efac;
+}
+
+.fail {
+    background: #7f1d1d;
+    color: #fecaca;
+}
+
+.pending {
+    background: #334155;
+    color: #cbd5e1;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.summary div {
+    background: #0f172a;
+    padding: 18px;
+    border-radius: 8px;
+}
+
+.summary h4 {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+.summary p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 30px;
+}
+
+@media(max-width: 750px) {
+    body { padding: 15px; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .summary { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 400px) {
+    .cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>Dashboard de Testes JavaScript</h1>
+    <p>Automação e validação das operações da calculadora</p>
+
+    <div class="info">
+        <span>Projeto: Calculadora</span>
+        <span>Ambiente: QA / Homologação</span>
+        <span>Tipo: Testes automatizados</span>
+        <span>Linguagem: JavaScript</span>
+    </div>
+</header>
+
+<!-- INDICADORES -->
+
+<section class="cards">
+
+    <div class="card">
+        <p>Total de testes</p>
+        <h2 class="blue" id="total">10</h2>
+    </div>
+
+    <div class="card">
+        <p>Testes aprovados</p>
+        <h2 class="green" id="aprovados">0</h2>
+    </div>
+
+    <div class="card">
+        <p>Testes reprovados</p>
+        <h2 class="red" id="reprovados">0</h2>
+    </div>
+
+    <div class="card">
+        <p>Taxa de aprovação</p>
+        <h2 class="purple" id="taxa">0%</h2>
+    </div>
+
+</section>
+
+<!-- EXECUÇÃO -->
+
+<section class="panel">
+
+    <h3>Execução da suíte de testes</h3>
+
+    <div class="actions">
+        <button class="run" onclick="executarTestes()">
+            ▶ Executar testes
+        </button>
+
+        <button class="reset" onclick="limparTestes()">
+            Limpar resultados
+        </button>
+    </div>
+
+    <div class="status" id="mensagem">
+        Aguardando execução dos testes JavaScript...
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="barra"></div>
+    </div>
+
+    <div class="progress-info">
+        <span>Progresso da execução</span>
+        <span id="progresso">0 / 10</span>
+    </div>
+
+</section>
+
+<!-- RESULTADOS -->
+
+<section class="panel">
+
+    <h3>Resultados dos casos de teste</h3>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Cenário de teste</th>
+                    <th>Entradas</th>
+                    <th>Esperado</th>
+                    <th>Obtido</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="test-results">
+
+                <tr class="group">
+                    <td colspan="7">REQUISITOS FUNCIONAIS</td>
+                </tr>
+
+                <tr class="group">
+                    <td colspan="7">BLOQUEIOS DE ERROS DO USUÁRIO</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+<!-- RESUMO -->
+
+<section class="panel">
+
+    <h3>Relatório da execução</h3>
+
+    <div class="summary">
+
+        <div>
+            <h4>Resultado geral</h4>
+            <p id="resumo">
+                Nenhum teste executado.
+            </p>
+        </div>
+
+        <div>
+            <h4>Última execução</h4>
+            <p id="data">
+                Aguardando execução.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    Sistema de Testes QA | Calculadora Matemática
+</footer>
+
+</div>
+
+
+<script>
+
+// ======================================
+// 1. FUNÇÕES DA CALCULADORA
+// ======================================
+
+// Este objeto representa o JavaScript
+// que será submetido aos testes.
+
+const calculator = {
+
+    soma(a, b) {
+        return a + b;
+    },
+
+    subtracao(a, b) {
+        return a - b;
+    },
+
+    multiplicacao(a, b) {
+        return a * b;
+    },
+
+    divisao(a, b) {
+
+        if (b === 0) {
+            throw new Error("Divisão por zero");
+        }
+
+        return a / b;
+    },
+
+    potencia(a, b) {
+        return Math.pow(a, b);
+    },
+
+    raiz(a, b) {
+
+        if (b === 0) {
+            throw new Error("Índice da raiz igual a zero");
+        }
+
+        if (a < 0 && b % 2 === 0) {
+            throw new Error("Raiz par de número negativo");
+        }
+
+        if (a < 0) {
+            return -Math.pow(-a, 1 / b);
+        }
+
+        return Math.pow(a, 1 / b);
+    }
+
+};
+
+
+// ======================================
+// 2. SUÍTE DE TESTES
+// ======================================
+
+
+const testSuites = [
+
+    // REQUISITOS FUNCIONAIS
+    { id: "RF-01", type: "Requisito", name: "Soma básica de positivos", op: "soma", args: [3, 5], expected: 8},
+    { id: "RF-02", type: "Requisito", name: "Subtração gerando negativo", op: "subtracao", args: [2, 5], expected: -3},
+    { id: "RF-03", type: "Requisito", name: "Multiplicação por zero", op: "multiplicacao", args: [0, 5], expected: 0},
+    { id: "RF-04", type: "Requisito", name: "Divisão exata comum", op: "divisao", args: [10, 2], expected: 5},
+    { id: "RF-05", type: "Requisito", name: "Potenciação com expoente decimal", op: "potencia", args: [4, 1.5], expected: 8},
+    { id: "RF-06", type: "Requisito", name: "Raiz quadrada exata", op: "raiz", args: [9, 2], expected: 3},
+    { id: "RF-07", type: "Requisito", name: "Potenciação normal", op: "potencia", args: [2, 3], expected: 8},
+
+    // BLOQUEIOS DE ERROS
+    { id: "RE-01", type: "Bloqueio", name: "Bloqueio: divisão por zero", op: "divisao", args: [2, 0], expectedError: "Divisão por zero"},
+    { id: "RE-02", type: "Bloqueio", name: "Bloqueio: raiz com índice zero", op: "raiz", args: [4, 0], expectedError: "Índice da raiz igual a zero"},
+    { id: "RE-03", type: "Bloqueio", name: "Bloqueio: raiz par de negativo", op: "raiz", args: [-4, 2], expectedError: "Raiz par de número negativo"}
+
+];
+
+
+// ======================================
+// 3. EXECUÇÃO DOS TESTES
+// ======================================
+
+let passedCount = 0;
+let failedCount = 0;
+
+const tabela = document.getElementById("test-results");
+
+function formatar(valor) {
+
+    if (typeof valor === "number") {
+        return Number(valor.toFixed(8)).toString();
+    }
+
+    return String(valor);
+}
+
+
+function executarCaso(caso) {
+
+    try {
+
+        // Executa a função real da calculadora.
+        const resultado = calculator[caso.op](...caso.args);
+
+        // Se o teste esperava um erro, mas não houve erro,
+        // o teste deve ser reprovado.
+
+        if (caso.expectedError) {
+
+            return {
+                obtido: formatar(resultado),
+                passou: false
+            };
+
+        }
+
+        const passou =
+            Number.isFinite(resultado) &&
+            Math.abs(resultado - caso.expected) < 0.00000001;
+
+        return {
+            obtido: formatar(resultado),
+            passou: passou
+        };
+
+    } catch (erro) {
+
+        // Verifica se o erro corresponde ao esperado.
+
+        const passou = caso.expectedError
+            ? erro.message === caso.expectedError
+            : false;
+
+        return {
+            obtido: "Erro: " + erro.message,
+            passou: passou
+        };
+
+    }
+
+}
+
+
+// ======================================
+// 4. MONTAGEM DA TABELA
+// ======================================
+
+function executarTestes() {
+
+    passedCount = 0;
+    failedCount = 0;
+
+    let html = "";
+
+    testSuites.forEach((caso, index) => {
+
+        const resultado = executarCaso(caso);
+
+        if (resultado.passou) {
+            passedCount++;
+        } else {
+            failedCount++;
+        }
+
+        if (index === 0) {
+
+            html += `
+                <tr class="group">
+                    <td colspan="7">REQUISITOS FUNCIONAIS</td>
+                </tr>
+            `;
+
+        }
+
+        if (index === 7) {
+
+            html += `
+                <tr class="group">
+                    <td colspan="7">BLOQUEIOS DE ERROS DO USUÁRIO</td>
+                </tr>
+            `;
+
+        }
+
+        const esperado = caso.expectedError
+            ? "Erro esperado"
+            : formatar(caso.expected);
+
+        const entrada = caso.args.join(", ");
+
+        html += `
+            <tr>
+
+                <td>${caso.id}</td>
+
+                <td>${caso.type}</td>
+
+                <td>${caso.name}</td>
+
+                <td>${entrada}</td>
+
+                <td>${esperado}</td>
+
+                <td>${resultado.obtido}</td>
+
+                <td>
+                    <span class="badge ${
+                        resultado.passou ? "pass" : "fail"
+                    }">
+                        ${resultado.passou ? "APROVADO" : "REPROVADO"}
+                    </span>
+                </td>
+
+            </tr>
+        `;
+
+    });
+
+    tabela.innerHTML = html;
+
+    atualizarDashboard();
+
+}
+
+
+// ======================================
+// 5. ATUALIZAÇÃO DOS INDICADORES
+// ======================================
+
+function atualizarDashboard() {
+
+    const total = testSuites.length;
+
+    const taxa = Math.round(
+        (passedCount / total) * 100
+    );
+
+    document.getElementById("total").textContent = total;
+
+    document.getElementById("aprovados").textContent =
+        passedCount;
+
+    document.getElementById("reprovados").textContent =
+        failedCount;
+
+    document.getElementById("taxa").textContent =
+        taxa + "%";
+
+    document.getElementById("barra").style.width =
+        (passedCount / total * 100) + "%";
+
+    document.getElementById("progresso").textContent =
+        total + " / " + total;
+
+    document.getElementById("mensagem").textContent =
+        failedCount === 0
+        ? "Execução concluída! Todos os testes foram aprovados."
+        : "Execução concluída! Foram encontrados testes reprovados.";
+
+    document.getElementById("resumo").textContent =
+        passedCount + " testes aprovados e " +
+        failedCount + " testes reprovados, de " +
+        total + " testes executados.";
+
+    document.getElementById("data").textContent =
+        new Date().toLocaleString("pt-BR");
+
+}
+
+
+// ======================================
+// 6. LIMPAR RESULTADOS
+// ======================================
+
+function limparTestes() {
+
+    passedCount = 0;
+    failedCount = 0;
+
+    document.getElementById("total").textContent =
+        testSuites.length;
+
+    document.getElementById("aprovados").textContent = "0";
+    document.getElementById("reprovados").textContent = "0";
+    document.getElementById("taxa").textContent = "0%";
+
+    document.getElementById("barra").style.width = "0%";
+
+    document.getElementById("progresso").textContent =
+        "0 / " + testSuites.length;
+
+    document.getElementById("mensagem").textContent =
+        "Aguardando execução dos testes JavaScript...";
+
+    document.getElementById("resumo").textContent =
+        "Nenhum teste executado.";
+
+    document.getElementById("data").textContent =
+        "Aguardando execução.";
+
+    tabela.innerHTML = `
+        <tr class="group">
+            <td colspan="7">REQUISITOS FUNCIONAIS</td>
+        </tr>
+        <tr class="group">
+            <td colspan="7">BLOQUEIOS DE ERROS DO USUÁRIO</td>
+        </tr>
+    `;
+
+}
+</script>
+
+</body>
+</html>
